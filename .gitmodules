@@ -10,3 +10,6 @@
 [submodule "elisp/theme-changer"]
 	path = elisp/theme-changer
 	url = https://github.com/hadronzoo/theme-changer.git
+[submodule "elpa/s"]
+	path = elpa/s
+	url = https://github.com/magnars/s.el.git
