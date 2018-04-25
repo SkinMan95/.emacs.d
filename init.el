@@ -233,6 +233,8 @@
 (require 'expand-region)
 (global-set-key (kbd "C-=") 'er/expand-region)
 
+(add-to-list 'load-path
+              "~/.emacs.d/elpa/s")
 
 ;; yasnippet
 (add-to-list 'load-path
