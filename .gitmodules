@@ -1,0 +1,12 @@
+[submodule "plugins/js2-refactor.el"]
+	path = plugins/js2-refactor.el
+	url = https://github.com/magnars/js2-refactor.el
+[submodule "plugins/yasnippet"]
+	path = plugins/yasnippet
+	url = https://github.com/capitaomorte/yasnippet
+[submodule "elisp/weyland-yutani-theme"]
+        path = "elisp/weyland-yutani-theme"
+	url = https://github.com/jstaursky/weyland-yutani-theme.git	
+[submodule "elisp/theme-changer"]
+	path = elisp/theme-changer
+	url = https://github.com/hadronzoo/theme-changer.git
