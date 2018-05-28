@@ -11,7 +11,7 @@
  '(jdee-server-dir "~/.emacs.d/jdee-server/target")
  '(package-selected-packages
    (quote
-    (markdown-mode+ markdown-preview-eww markdown-preview-mode benchmark-init smartparens flycheck js2-refactor ac-js2 js2-mode expand-region jdee company rainbow-mode git-gutter multiple-cursors markdown-mode))))
+    (doom-themes markdown-mode+ markdown-preview-eww markdown-preview-mode benchmark-init smartparens flycheck js2-refactor ac-js2 js2-mode expand-region jdee company rainbow-mode git-gutter multiple-cursors markdown-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -162,11 +162,10 @@
 (setq calendar-longitude -74.4)
 
 (load "~/.emacs.d/elisp/weyland-yutani-theme/weyland-yutani-theme.el")
-(load "~/.emacs.d/elisp/magonyx-theme.el")
-(load "~/.emacs.d/elisp/white-sand-theme.el")
 
+(require 'doom-themes)
 (require 'theme-changer)
-(change-theme 'white-sand 'weyland-yutani)
+(change-theme 'doom-molokai 'weyland-yutani)
 
 (setq inhibit-startup-screen t)
 
