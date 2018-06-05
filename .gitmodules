@@ -19,3 +19,6 @@
 [submodule "elisp/dimmer"]
 	path = elisp/dimmer
 	url = https://github.com/gonewest818/dimmer.el
+[submodule "elisp/ido-vertical-mode"]
+	path = elisp/ido-vertical-mode
+	url = https://github.com/creichert/ido-vertical-mode.el

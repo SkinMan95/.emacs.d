@@ -62,8 +62,12 @@
 (require 'dimmer)
 (dimmer-mode 1)
 
+(load "~/.emacs.d/elisp/ido-vertical-mode/ido-vertical-mode.el")
 (require 'ido)
+(require 'ido-vertical-mode)
 (ido-mode t)
+(ido-vertical-mode 1)
+(setq ido-vertical-define-keys 'C-n-and-C-p-only)
 
  ;; (set-default-font 'Terminus-9)
 (set-frame-font "Inconsolata-12")
