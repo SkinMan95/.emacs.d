@@ -13,3 +13,6 @@
 [submodule "elpa/s"]
 	path = elpa/s
 	url = https://github.com/magnars/s.el.git
+[submodule "elisp/beacon"]
+	path = elisp/beacon
+	url = https://github.com/Malabarba/beacon

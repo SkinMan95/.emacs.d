@@ -54,6 +54,10 @@
 (size-indication-mode 1)
 (column-number-mode 1)
 
+(load "~/.emacs.d/elisp/beacon/beacon.el")
+(require 'beacon)
+(beacon-mode 1)
+
  ;; (set-default-font 'Terminus-9)
 (set-frame-font "Inconsolata-12")
 
