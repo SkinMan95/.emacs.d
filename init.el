@@ -49,12 +49,10 @@
           (revert-buffer t t t) )))
     (message "Refreshed open files.") )
 
-(global-linum-mode 1)
+(global-display-line-numbers-mode)
 (show-paren-mode 1)
 (size-indication-mode 1)
 (column-number-mode 1)
-
-;; (load-theme 'wombat)
 
  ;; (set-default-font 'Terminus-9)
 (set-frame-font "Inconsolata-12")
@@ -147,7 +145,7 @@
 ;; (company-mode)
 
 (defun hilite-todos ()
-  (highlight-lines-matching-regexp "\\<\\(FIXME\\|TODO\\|XXX\\):?" 
+  (highlight-lines-matching-regexp "\\<\\(FIXME\\|TODO\\|XXX\\):?"
        'hi-red-b)
 )
 
