@@ -16,3 +16,6 @@
 [submodule "elisp/beacon"]
 	path = elisp/beacon
 	url = https://github.com/Malabarba/beacon
+[submodule "elisp/dimmer"]
+	path = elisp/dimmer
+	url = https://github.com/gonewest818/dimmer.el

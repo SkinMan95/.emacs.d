@@ -58,6 +58,10 @@
 (require 'beacon)
 (beacon-mode 1)
 
+(load "~/.emacs.d/elisp/dimmer/dimmer.el")
+(require 'dimmer)
+(dimmer-mode 1)
+
  ;; (set-default-font 'Terminus-9)
 (set-frame-font "Inconsolata-12")
 
