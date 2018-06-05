@@ -62,6 +62,9 @@
 (require 'dimmer)
 (dimmer-mode 1)
 
+(require 'ido)
+(ido-mode t)
+
  ;; (set-default-font 'Terminus-9)
 (set-frame-font "Inconsolata-12")
 
