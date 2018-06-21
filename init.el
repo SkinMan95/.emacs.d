@@ -50,6 +50,7 @@
     (message "Refreshed open files.") )
 
 (global-display-line-numbers-mode)
+;; (global-linum-mode 1)
 (show-paren-mode 1)
 (size-indication-mode 1)
 (column-number-mode 1)
@@ -156,8 +157,8 @@
 (global-git-gutter-mode +1)
 
 ;; Activa Rainbow mode para colores hexadecimales (o por nombre)
-;; (rainbow-mode)
-;; (company-mode)
+(rainbow-mode)
+(company-mode)
 
 (defun hilite-todos ()
   (highlight-lines-matching-regexp "\\<\\(FIXME\\|TODO\\|XXX\\):?"
@@ -178,7 +179,7 @@
 
 (require 'doom-themes)
 (require 'theme-changer)
-(change-theme 'doom-molokai 'weyland-yutani)
+(change-theme 'doom-molokai 'doom-dracula)
 
 (setq inhibit-startup-screen t)
 
