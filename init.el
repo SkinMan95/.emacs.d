@@ -11,7 +11,7 @@
  '(jdee-server-dir "~/.emacs.d/jdee-server/target")
  '(package-selected-packages
    (quote
-    (doom-themes markdown-mode+ markdown-preview-eww markdown-preview-mode benchmark-init smartparens flycheck js2-refactor ac-js2 js2-mode expand-region jdee company rainbow-mode git-gutter multiple-cursors markdown-mode))))
+    (tide typescript-mode doom-themes markdown-mode+ markdown-preview-eww markdown-preview-mode benchmark-init smartparens flycheck js2-refactor ac-js2 js2-mode expand-region jdee company rainbow-mode git-gutter multiple-cursors markdown-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -279,3 +279,23 @@
 (require 'smartparens-config)
 (add-hook 'prog-mode-hook 'smartparens-mode)
 (add-hook 'prog-mode-hook 'flycheck-mode)
+
+(defun setup-tide-mode ()
+  (interactive)
+  (tide-setup)
+  (flycheck-mode +1)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled))
+  (eldoc-mode +1)
+  (tide-hl-identifier-mode +1)
+  ;; company is an optional dependency. You have to
+  ;; install it separately via package-install
+  ;; `M-x package-install [ret] company`
+  (company-mode +1))
+
+;; aligns annotation to the right hand side
+(setq company-tooltip-align-annotations t)
+
+;; formats the buffer before saving
+(add-hook 'before-save-hook 'tide-format-before-save)
+
+(add-hook 'typescript-mode-hook #'setup-tide-mode)
