@@ -125,7 +125,7 @@
 Retrieves the hexidecimal string repesented the named COLOR (e.g. \"red\")
 for FRAME (defaults to the current frame).
 
-\(fn COLOR &optional FRAME)" nil nil)
+\(fn COLOR)" nil nil)
 
 (autoload 'doom-blend "doom-themes" "\
 Blend two colors (hexidecimal strings) together by a coefficient ALPHA (a
