@@ -11,7 +11,7 @@
  '(jdee-server-dir "~/.emacs.d/jdee-server/target")
  '(package-selected-packages
    (quote
-    (tide typescript-mode doom-themes markdown-mode+ markdown-preview-eww markdown-preview-mode benchmark-init smartparens flycheck js2-refactor ac-js2 js2-mode expand-region jdee company rainbow-mode git-gutter multiple-cursors markdown-mode))))
+    (doom-modeline tide typescript-mode doom-themes markdown-mode+ markdown-preview-eww markdown-preview-mode benchmark-init smartparens flycheck js2-refactor ac-js2 js2-mode expand-region jdee company rainbow-mode git-gutter multiple-cursors markdown-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -180,6 +180,9 @@
 (require 'doom-themes)
 (require 'theme-changer)
 (change-theme 'doom-molokai 'doom-dracula)
+
+(require 'doom-modeline)
+(doom-modeline-init)
 
 (setq inhibit-startup-screen t)
 
