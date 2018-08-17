@@ -5,7 +5,7 @@
 ;; Author: Vincent Zhang <seagle0128@gmail.com>
 ;; Homepage: https://github.com/seagle0128/doom-modeline
 ;; Version: 0.4.0
-;; Package-Version: 20180813.1713
+;; Package-Version: 20180817.304
 ;; Package-Requires: ((emacs "25.1") (all-the-icons "1.0.0") (projectile "0.10.0") (shrink-path "0.2.0") (eldoc-eval "0.1") (dash "2.11.0"))
 ;; Keywords: faces mode-line
 
@@ -74,10 +74,10 @@
 ;; Variables
 ;;
 
-(defvar doom-modeline-height 23
+(defvar doom-modeline-height 29
   "How tall the mode-line should be (only respected in GUI Emacs).")
 
-(defvar doom-modeline-bar-width 3
+(defvar doom-modeline-bar-width 1
   "How wide the mode-line bar should be (only respected in GUI Emacs).")
 
 (defvar doom-modeline-buffer-file-name-style 'truncate-upto-project
@@ -91,14 +91,15 @@ Given ~/Projects/FOSS/emacs/lisp/comint.el
   relative-to-project => lisp/comint.el
   file-name => comint.el")
 
+(defvar doom-modeline-python-executable "python"
+	"What executable for python will be used (if nil nothing will be shown)")
+
 ;; externs
 (defvar anzu--current-position)
 (defvar anzu--overflow-p)
 (defvar anzu--state)
 (defvar anzu--total-matched)
 (defvar anzu-cons-mode-line-p)
-(defvar anzu-minimum-input-length)
-(defvar anzu-search-threshold)
 (defvar evil-ex-active-highlights-alist)
 (defvar evil-ex-argument)
 (defvar evil-ex-range)
@@ -236,39 +237,36 @@ active.")
             ((error "%s is not a valid segment" seg))))
     (nreverse forms)))
 
-(defmacro doom-modeline-def-modeline (name lhs &optional rhs)
+(defun doom-modeline-def-modeline (name lhs &optional rhs)
   "Defines a modeline format and byte-compiles it.
 
 NAME is a symbol to identify it (used by `doom-modeline' for retrieval).
 LHS and RHS are lists of symbols of modeline segments defined with
 `doom-modeline-def-segment'.
+
 Example:
-  (doom-modeline-def-modeline minimal
-    (bar matches \" \" buffer-info)
-    (media-info major-mode))
+  (doom-modeline-def-modeline 'minimal
+    '(bar matches \" \" buffer-info)
+    '(media-info major-mode))
   (doom-modeline-set-modeline 'minimal t)"
   (let ((sym (intern (format "doom-modeline-format--%s" name)))
         (lhs-forms (doom-modeline--prepare-segments lhs))
         (rhs-forms (doom-modeline--prepare-segments rhs)))
-    `(progn
-       (fset ',sym
-             (lambda ()
-               ,(concat "Modeline:\n"
-                        (format "  %s\n  %s"
-                                (prin1-to-string lhs)
-                                (prin1-to-string rhs)))
-               (let ((lhs (list ,@lhs-forms))
-                     (rhs (list ,@rhs-forms)))
-                 (let ((rhs-str (format-mode-line rhs)))
-                   (list lhs
-                         (propertize
-                          " " 'display
-                          `((space :align-to (- (+ right right-fringe right-margin)
-                                                ,(+ 1 (string-width rhs-str))))))
-                         rhs-str)))))
-       ,(unless (bound-and-true-p byte-compile-current-file)
-          `(let (byte-compile-warnings)
-             (byte-compile #',sym))))))
+    (defalias sym
+      (lambda ()
+        (let ((lhs (eval `(list ,@lhs-forms) t))
+              (rhs (eval `(list ,@rhs-forms) t)))
+          (let ((rhs-str (format-mode-line rhs)))
+            (list lhs
+                  (propertize
+                   " " 'display
+                   `((space :align-to (- (+ right right-fringe right-margin)
+                                         ,(+ 1 (string-width rhs-str))))))
+                  rhs-str))))
+      (concat "Modeline:\n"
+              (format "  %s\n  %s"
+                      (prin1-to-string lhs)
+                      (prin1-to-string rhs))))))
 
 (defun doom-modeline (key)
   "Return a mode-line configuration associated with KEY (a symbol).
@@ -325,32 +323,26 @@ If STRICT-P, return nil if no project was found, otherwise return
 
 ;; anzu and evil-anzu expose current/total state that can be displayed in the
 ;; mode-line.
-(when (featurep 'anzu)
-  (add-hook 'anzu-mode-hook
-            (lambda ()
-              (setq anzu-cons-mode-line-p nil
-                    anzu-minimum-input-length 1
-                    anzu-search-threshold 250)))
+(defun doom-modeline-fix-anzu-count (positions here)
+  "Calulate anzu counts via POSITIONS and HERE."
+  (cl-loop for (start . end) in positions
+           collect t into before
+           when (and (>= here start) (<= here end))
+           return (length before)
+           finally return 0))
 
-  (defun doom-modeline-fix-anzu-count (positions here)
-    (cl-loop for (start . end) in positions
-             collect t into before
-             when (and (>= here start) (<= here end))
-             return (length before)
-             finally return 0))
+(advice-add #'anzu--where-is-here :override #'doom-modeline-fix-anzu-count)
 
-  (advice-add #'anzu--where-is-here :override #'doom-modeline-fix-anzu-count)
+;; Avoid anzu conflicts across buffers
+;; (mapc #'make-variable-buffer-local
+;;       '(anzu--total-matched anzu--current-position anzu--state
+;;                             anzu--cached-count anzu--cached-positions anzu--last-command
+;;                             anzu--last-isearch-string anzu--overflow-p))
 
-  ;; Avoid anzu conflicts across buffers
-  ;; (mapc #'make-variable-buffer-local
-  ;;       '(anzu--total-matched anzu--current-position anzu--state
-  ;;                             anzu--cached-count anzu--cached-positions anzu--last-command
-  ;;                             anzu--last-isearch-string anzu--overflow-p))
-
-  ;; Ensure anzu state is cleared when searches & iedit are done
-  (add-hook 'isearch-mode-end-hook #'anzu--reset-status t)
-  ;; (add-hook '+evil-esc-hook #'anzu--reset-status t)
-  (add-hook 'iedit-mode-end-hook #'anzu--reset-status))
+;; Ensure anzu state is cleared when searches & iedit are done
+;; (add-hook 'isearch-mode-end-hook #'anzu--reset-status t)
+;; (add-hook '+evil-esc-hook #'anzu--reset-status t)
+(add-hook 'iedit-mode-end-hook #'anzu--reset-status)
 
 ;; Keep `doom-modeline-current-window' up-to-date
 (defvar doom-modeline-current-window (frame-selected-window))
@@ -415,7 +407,7 @@ If STRICT-P, return nil if no project was found, otherwise return
   (when (display-graphic-p)
     (apply 'all-the-icons-material args)))
 
-(defsubst doom-modeline--active ()
+(defun doom-modeline--active ()
   "Whether is an active window."
   (eq (selected-window) doom-modeline-current-window))
 
@@ -697,7 +689,9 @@ directory, the file name, and its state (modified, read-only or non-existent)."
 
 (doom-modeline-def-segment vcs
   "Displays the current branch, colored based on its state."
-  doom-modeline--vcs)
+  (if (doom-modeline--active)
+      doom-modeline--vcs
+    ""))
 
 
 ;;
@@ -743,7 +737,9 @@ Uses `all-the-icons-material' to fetch the icon."
 (doom-modeline-def-segment flycheck
   "Displays color-coded flycheck error status in the current buffer with pretty
 icons."
-  doom-modeline--flycheck)
+  (if (doom-modeline--active)
+      doom-modeline--flycheck
+    ""))
 
 
 ;;
@@ -810,6 +806,7 @@ lines are selected, or the NxM dimensions of a block selection."
 
 Requires `anzu', also `evil-anzu' if using `evil-mode' for compatibility with
 `evil-search'."
+  (setq anzu-cons-mode-line-p nil)
   (when (and (bound-and-true-p anzu--state)
              (not (bound-and-true-p iedit-mode)))
     (propertize
@@ -937,7 +934,7 @@ with `evil-ex-substitute', and/or 4. The number of active `iedit' regions."
     (if (< 0 (length num))
         (propertize (format " %s " num)
                     'face (if (doom-modeline--active)
-                              'doom-modeline-panel
+                              `(:inherit doom-modeline-bar :foreground ,(face-background 'default))
                             'doom-modeline-inactive-bar))
       "")))
 
@@ -1023,25 +1020,25 @@ See `mode-line-percent-position'.")
 ;; Mode lines
 ;;
 
-(doom-modeline-def-modeline main
-                            (workspace-number window-number bar evil-state matches " " buffer-info buffer-position  " " selection-info)
-                            (global buffer-encoding major-mode process vcs flycheck))
+(doom-modeline-def-modeline 'main
+                            ' (workspace-number window-number bar evil-state matches " " buffer-info buffer-position  " " selection-info)
+                            '(global buffer-encoding major-mode process vcs flycheck))
 
-(doom-modeline-def-modeline minimal
-                            (bar matches " " buffer-info)
-                            (media-info major-mode))
+(doom-modeline-def-modeline 'minimal
+                            '(bar matches " " buffer-info)
+                            '(media-info major-mode))
 
-(doom-modeline-def-modeline special
-                            (window-number bar evil-state matches " " buffer-info-simple buffer-position " " selection-info)
-                            (global buffer-encoding major-mode process flycheck))
+(doom-modeline-def-modeline 'special
+                            '(window-number bar evil-state matches " " buffer-info-simple buffer-position " " selection-info)
+                            '(global buffer-encoding major-mode process flycheck))
 
-(doom-modeline-def-modeline project
-                            (window-number bar buffer-default-directory)
-                            (global major-mode))
+(doom-modeline-def-modeline 'project
+                            '(window-number bar buffer-default-directory)
+                            '(global major-mode))
 
-(doom-modeline-def-modeline media
-                            (window-number bar " %b  ")
-                            (global media-info major-mode))
+(doom-modeline-def-modeline 'media
+                            '(window-number bar " %b  ")
+                            '(global media-info major-mode))
 
 ;;
 ;; Hooks
@@ -1068,7 +1065,7 @@ See `mode-line-percent-position'.")
     ;; of Emacs, someone give the man a modeline!
     (dolist (bname '("*scratch*" "*Messages*"))
       (with-current-buffer bname
-        (doom-modeline-set-modeline 'special)))))
+        (doom-modeline-set-modeline 'main)))))
 
 ;;;###autoload
 (defun doom-modeline-set-special-modeline ()
@@ -1098,8 +1095,8 @@ See `mode-line-percent-position'.")
 ;; Versions, support Python, Ruby and Golang
 (add-hook 'python-mode-hook
           (lambda ()
-            (when (and (executable-find "python") (executable-find "cut") (executable-find "sed"))
-              (setq doom-modeline-env-command "python --version 2>&1 | cut -d' ' -f2 | sed -n '1p'"))))
+            (when (and (executable-find doom-modeline-python-executable) (executable-find "cut") (executable-find "sed"))
+              (setq doom-modeline-env-command (concat doom-modeline-python-executable " --version 2>&1 | cut -d' ' -f2 | sed -n '1p'")))))
 (add-hook 'ruby-mode-hook
           (lambda ()
             (when (and (executable-find "ruby") (executable-find "cut") (executable-find "sed"))
