@@ -11,7 +11,7 @@
  '(jdee-server-dir "~/.emacs.d/jdee-server/target")
  '(package-selected-packages
    (quote
-    (rjsx-mode doom-modeline tide typescript-mode doom-themes markdown-mode+ markdown-preview-eww markdown-preview-mode benchmark-init smartparens flycheck js2-refactor ac-js2 js2-mode expand-region jdee company rainbow-mode git-gutter multiple-cursors markdown-mode))))
+    (php-mode rjsx-mode doom-modeline tide typescript-mode doom-themes markdown-mode+ markdown-preview-eww markdown-preview-mode benchmark-init smartparens flycheck js2-refactor ac-js2 js2-mode expand-region jdee company rainbow-mode git-gutter multiple-cursors markdown-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -304,3 +304,7 @@
 (add-hook 'typescript-mode-hook #'setup-tide-mode)
 
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
+
+(autoload 'php-mode "php-mode" "Major mode for editing PHP code." t)
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
+(add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
