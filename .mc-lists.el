@@ -6,6 +6,7 @@
 	electric-newline-and-maybe-indent
 	indent-for-tab-command
 	markdown-outdent-or-delete
+	rjsx-delete-creates-full-tag
 	sgml-slash
 	sp-remove-active-pair-overlay
 	))
