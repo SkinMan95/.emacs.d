@@ -3,8 +3,16 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+	c-electric-delete-forward
+	c-electric-lt-gt
+	c-electric-paren
+	c-electric-semi&comma
+	c-electric-slash
+	c-indent-line-or-region
 	electric-newline-and-maybe-indent
+	eval-print-last-sexp
 	indent-for-tab-command
+	kill-region
 	markdown-outdent-or-delete
 	rjsx-delete-creates-full-tag
 	sgml-slash
@@ -13,5 +21,6 @@
 
 (setq mc/cmds-to-run-once
       '(
+	move-text-down
 	switch-to-buffer
 	))
