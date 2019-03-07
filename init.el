@@ -90,8 +90,9 @@
 
 (require 'tex-mik)
 (setq TeX-PDF-mode t)
-(eval-after-load "tex"
-  '(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Okular"))
+(setq-default TeX-master "main") ; All master files called "main".
+;; (eval-after-load "tex"
+;;   '(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Okular"))
 
 (require 'package)
 (add-to-list 'package-archives
