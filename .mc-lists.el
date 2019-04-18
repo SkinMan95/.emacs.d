@@ -3,11 +3,14 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+	LaTeX-insert-left-brace
+	TeX-insert-backslash
 	c-electric-delete-forward
 	c-electric-lt-gt
 	c-electric-paren
 	c-electric-semi&comma
 	c-electric-slash
+	c-electric-star
 	c-indent-line-or-region
 	electric-newline-and-maybe-indent
 	eval-print-last-sexp
